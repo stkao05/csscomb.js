@@ -60,6 +60,7 @@ function getOptions() {
       lint: 'l',
       help: 'h',
       verbose: 'v',
+      'stdin-filepath': 'p',
       'tty-mode': 't'
     }
   };
@@ -182,7 +183,14 @@ function processSTDIN() {
 }
 
 function processInputData(input) {
-  comb.processString(input).catch(e => {
+  var opt
+  if (options["stdin-filepath"]) {
+    opt = {
+      syntax: comb._extractSyntax(options["stdin-filepath"])
+    }
+  }
+
+  comb.processString(input, opt).catch(e => {
     process.stderr.write(e.message);
     process.exit(1);
   }).then(output => {
